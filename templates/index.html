@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alpha Academy</title>
+    <style>
+        body{
+            background-color: #f2f2f2;
+            font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        section{
+            background-color: black;
+            height: 100px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        
+
+        .menu ul{
+            display: flex;
+            flex-direction: row;
+            list-style-type: none;
+            gap: 300px;
+            color: #f2f2f2;
+
+        }
+
+        
+        .menu a{
+            color: #f2f2f2;
+            text-decoration: none;
+            font-weight: bold
+        }
+
+        .menu a:hover{
+            color: #f2f2f2;
+            text-decoration: underline;
+        }
+
+        .inicio {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: calc(100vh - 100px);
+            text-align: center
+        }
+
+        .inicio p{
+            font-style: italic;
+        }
+
+        .total{
+            background-color:#D3D3D3;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .cadastro{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .cadastro a{
+            background-color: #DCDCDC;
+            text-decoration: none;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            margin-left: 30px;
+            color: 	#363636;
+        }
+
+    </style>
+</head>
+<body>
+
+    <section>
+        <div class="menu">
+            <ul>
+                <li><a href="/alunos">Nossos alunos</a></li>
+                <li style="font-weight: bold;">Total de alunos: {{soma_alunos}}</li>
+                <li><a href="/treinos">Nossos treinos</a></li>
+            </ul>
+            
+        </div>
+    </section>
+
+   <div class="inicio">
+    <h1>
+        Bem vindo a Alpha Academy
+    </h1>
+    <p>
+        Aqui você encontra os melhores treinos para você!
+    </p>
+
+    <div class="cadastro">
+        <a href="/cast-aluno">Cadastrar Alunos</a>
+        <a href="/cast-treino">Cadastrar Treinos</a>
+    </div>
+   </div>
+</body>
+</html>

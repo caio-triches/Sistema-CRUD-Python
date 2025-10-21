@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treinos - Alpha Academy</title>
+    <style>
+        body{
+            background-color: #f2f2f2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        section{
+            background-color: #DCDCDC;
+            width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #C0C0C0;
+
+        }
+
+        .card{
+            border: 1px solid #ddd;
+            background-color: #fafafa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #A9A9A9;
+        }
+
+        .card ul{
+            list-style: none;
+        }
+
+        h1{
+            text-align: center;
+        }
+
+        a{
+            text-decoration: none;
+            color: black;
+            font-weight: bold;
+        }
+
+        a:hover{
+            text-decoration: underline;
+        }
+
+        .deletar{
+           color: black;
+           margin-top: 20px;
+        }
+        
+        .not{
+            background-color: #ccc;
+            height: 100px;
+            width: 600px;
+            margin: 0 auto;
+            border: 1px solid black;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        .not a {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    {%if not treinos%}
+    <div class="not">
+        <h1>Não há Treinos cadastrados</h1>
+
+        <a href="/">Voltar</a>
+
+    </div>
+    {%else%}
+
+    <h1>Lista dos nossos treinos</h1>
+    <section>
+       
+        {% for t in treinos %}
+    <div class="card">
+        <ul>
+         <li><h3>{{ t.nome }}</h3></li>
+
+         {% if t.nivel == "Difícil" %}
+         <li>Dificuldade: {{ t.nivel }} 💪</li>
+         {% else %}
+         <li>Dificuldade: {{ t.nivel }}</li>
+          {% endif %}
+        
+         <li>Duração: {{ t.duracao }} min</li>
+
+          <li>
+               <a class="deletar" href="/deletar-treino/{{ t.id }}" 
+                 onclick="return confirm('Tem certeza que deseja deletar este treino?')">
+                🗑️ Deletar
+             </a>
+             <a href="/editar-treino/{{ t.id }}">
+                📝 Editar
+             </a>
+                </li>
+            </ul>
+        </div>
+    {% endfor %}
+        <a href="/">Voltar</a>
+    </section>
+    {%endif%}
+
+    
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Treino</title>
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f2f2f2;
+            text-align: center;
+        }
+
+        form {
+            background-color: white;
+            width: 300px;
+            margin: 40px auto;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 90%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+
+        button {
+            margin-top: 15px;
+            padding: 8px 15px;
+            background-color: #dfdfdf;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #cac9c9
+        }
+
+        a {
+            display: inline-block;
+            margin-top: 10px;
+            color: #363636;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Cadastrar Novos Treinos</h1>
+
+    <form method="POST" action="/salvar-treino">
+        <label for="nome">Nome:</label>
+        <input type="text" id="nome" name="nome" required>
+
+        <label for="nivel">nivel:</label>
+        <input type="text" id="nivel" name="nivel" required>
+
+        <label for="duracao">Duração (min):</label>
+        <input type="number" id="duracao" name="duracao" required>
+
+        <button type="submit">Salvar</button>
+    </form>
+
+    <a href="/">Voltar</a>
+</body>
+</html>
