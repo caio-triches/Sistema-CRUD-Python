@@ -1,135 +1,114 @@
-from flask import Flask, render_template, request, redirect
-import mysql.connector
-app = Flask(__name__)
+from flask import Flask, render_template, request, redirect, url_for
+from db import db
+from models import Treino, Alunos
 
-conexao = mysql.connector.connect(host="localhost", port="3406", user="root", password="" , database="academia_flask")
-cursor = conexao.cursor(dictionary=True)
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = "sqlite:///academia.db"
+db.init_app(app)
 
 
 @app.route('/') 
 def index():
-    cursor.execute("SELECT COUNT(nome) AS total_alunos FROM alunos")
-    soma_alunos = cursor.fetchone()
+    return render_template("index.html")
 
-    return render_template("index.html", soma_alunos=soma_alunos['total_alunos'])
+    
+@app.route("/treinos")
+def treinos():
+    treinos = db.session.query(Treino).all()
+    return render_template("treinos.html", treino=treinos)
+
+@app.route("/cast-treino", methods=["POST", "GET"])
+def registrar():
+    if request.method == "GET":
+        return render_template("cast-treino.html")
+    elif request.method == "POST":
+        nome = request.form["nome"]
+        nivel = request.form["nivel"]
+        duracao = request.form["duracao"]
+
+        new_trainer = Treino(nome=nome, nivel=nivel, duracao=duracao)
+        db.session.add(new_trainer)
+        db.session.commit()
+
+        return redirect(url_for('treinos'))
+
+@app.route("/deletar/<int:id>")
+def deletar(id):
+    treino = db.session.query(Treino).filter_by(id=id).first()
+    db.session.delete(treino)
+    db.session.commit()
+
+    return redirect(url_for('treinos'))
+
+@app.route("/editar-treino/<int:id>", methods=['GET', 'POST'])
+def editar(id):
+    treino = db.session.query(Treino).filter_by(id=id).first()
+    if request.method == 'GET':
+        return render_template("/editar-treino.html", treino=treino)
+    elif request.method == 'POST':
+        nome = request.form['nome']
+        nivel = request.form['nivel']
+        duracao = request.form['duracao']
+
+        treino.nome = nome
+        treino.nivel = nivel
+        treino.duracao = duracao
+
+        db.session.commit()
+
+        return redirect(url_for('treinos'))
+    
 
 @app.route("/alunos")
 def alunos():
-    cursor.execute("SELECT * FROM alunos")
-    alunos = cursor.fetchall()
-
+    alunos = db.session.query(Alunos).all()
     return render_template("alunos.html", alunos=alunos)
 
-@app.route("/treinos")
-def treinos():
-    cursor.execute("SELECT * FROM treinos")
-    treinos = cursor.fetchall()
+@app.route('/cast-aluno', methods=['GET', 'POST'])
+def registrar_aluno():
+    if request.method == "GET":
+        return render_template("cast-aluno.html")
+    elif request.method == "POST":
+        nome = request.form["nome"]
+        idade = request.form["idade"]
+        plano = request.form["plano"]
+
+        new_user = Alunos(nome=nome, idade=idade, plano=plano)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return redirect(url_for('alunos'))
     
-    return render_template("treinos.html", treinos=treinos)
+@app.route("/deletar-alunos/<int:id>")
+def deletar_alunos(id):
+    alunos = db.session.query(Alunos).filter_by(id=id).first()
+    db.session.delete(alunos)
+    db.session.commit()
+
+    return redirect(url_for('alunos'))
+
+@app.route("/editar-alunos/<int:id>", methods=['GET', 'POST'])
+def editar_alunos(id):
+    alunos = db.session.query(Alunos).filter_by(id=id).first()
+    if request.method == 'GET':
+        return render_template("/editar-alunos.html", alunos=alunos)
+    elif request.method == 'POST':
+        nome = request.form['nome']
+        idade = request.form['idade']
+        plano = request.form['plano']
+
+        alunos.nome = nome
+        alunos.idade = idade
+        alunos.plano = plano
+
+        db.session.commit()
+
+        return redirect(url_for('alunos'))
+    
 
 
-@app.route('/cast-aluno')
-def cast_aluno():
-    return render_template("cast-aluno.html")
-
-@app.route("/salvar-aluno", methods=["POST"])
-def salvar_aluno():
-    nome = request.form["nome"]
-    idade = request.form["idade"]
-    plano = request.form["plano"]
-
-    sql = "INSERT INTO alunos (nome, idade, plano) VALUES (%s, %s, %s)"
-    val = (nome, idade, plano)
-
-    cursor = conexao.cursor(dictionary = True)
-    cursor.execute(sql, val)
-    conexao.commit()
-
-    return redirect("/alunos")
-
-
-@app.route('/cast-treino')
-def cast_treino():
-    return render_template("cast-treino.html")
-
-@app.route("/salvar-treino", methods=["POST"])
-def salvar_treino():
-    nome = request.form["nome"]
-    nivel = request.form["nivel"]
-    duracao = request.form["duracao"]
-
-    sql = "INSERT INTO treinos (nome, nivel, duracao) VALUES (%s, %s, %s)"
-    val = (nome, nivel, duracao)
-
-    cursor = conexao.cursor(dictionary = True)
-    cursor.execute(sql, val)
-    conexao.commit()
-
-    return redirect("/treinos")
-
-@app.route("/deletar-treino/<int:id>")
-def deletar_treino(id):
-    sql = "DELETE FROM treinos WHERE id = %s"
-    val = (id,)
-    cursor.execute(sql, val)
-    conexao.commit()
-    return redirect("/treinos")
-
-@app.route("/deletar-aluno/<int:id>")
-def deletar_aluno(id):
-    sql = "DELETE FROM alunos WHERE id = %s"
-    val = (id,)
-    cursor.execute(sql, val)
-    conexao.commit()
-    return redirect("/alunos")
-
-@app.route("/editar-alunos/<int:id>")
-def editar_aluno(id):
-    sql = "SELECT * FROM alunos WHERE id = %s"
-    val = (id,)
-    cursor.execute(sql, val)
-    aluno = cursor.fetchone()
-
-    return render_template("editar-alunos.html", aluno=aluno)
-
-@app.route("/atualizar-aluno/<int:id>", methods=["POST"])
-def atualizar_aluno(id):
-    nome = request.form["nome"]
-    idade = request.form["idade"]
-    plano = request.form["plano"]
-
-    sql = "UPDATE alunos SET nome = %s, idade = %s, plano = %s WHERE id = %s"
-    val = (nome, idade, plano, id)
-
-    cursor = conexao.cursor(dictionary = True)
-    cursor.execute(sql, val)
-    conexao.commit()
-
-    return redirect("/alunos")
-
-@app.route("/editar-treino/<int:id>")
-def editar_treino(id):
-    sql = "SELECT * FROM treinos WHERE id = %s"
-    val = (id,)
-    cursor.execute(sql, val)
-    treino = cursor.fetchone()
-
-    return render_template("editar-treino.html", treino=treino)
-
-@app.route("/atualizar-treino/<int:id>", methods=["POST"])
-def atualizar_treino(id):
-    nome = request.form["nome"]
-    nivel = request.form["nivel"]
-    duracao = request.form["duracao"]
-
-    sql = "UPDATE treinos SET nome = %s, nivel = %s, duracao = %s WHERE id = %s"
-    val = (nome, nivel, duracao, id)
-
-    cursor = conexao.cursor(dictionary = True)
-    cursor.execute(sql, val)
-    conexao.commit()
-
-    return redirect("/treinos")
 
 if __name__ == "__main__":
+    with app.app_context():
+        db.create_all()
     app.run(debug=True)

@@ -70,7 +70,7 @@
 </head>
 <body>
 
-    {%if not treinos%}
+    {%if not treino%}
     <div class="not">
         <h1>Não há Treinos cadastrados</h1>
 
@@ -82,7 +82,7 @@
     <h1>Lista dos nossos treinos</h1>
     <section>
        
-        {% for t in treinos %}
+        {% for t in treino %}
     <div class="card">
         <ul>
          <li><h3>{{ t.nome }}</h3></li>
@@ -96,7 +96,7 @@
          <li>Duração: {{ t.duracao }} min</li>
 
           <li>
-               <a class="deletar" href="/deletar-treino/{{ t.id }}" 
+               <a class="deletar" href="/deletar/{{ t.id }}" 
                  onclick="return confirm('Tem certeza que deseja deletar este treino?')">
                 🗑️ Deletar
              </a>
